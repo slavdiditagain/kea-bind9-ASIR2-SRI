@@ -87,8 +87,6 @@ sudo nano /etc/kea/kea-dhcp4.conf
 ```
 ### Archivo: /etc/kea/kea-dhcp4.conf:
 ```
-json
-
 {
   "Dhcp4": {
     "interfaces-config": {
