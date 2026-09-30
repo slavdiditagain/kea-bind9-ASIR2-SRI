@@ -20,6 +20,8 @@ Guia detallada paso por paso para configurar un servidor DHCP (KEA) y un servido
 > - Ubuntu Server = intnet.
 > - Ubuntu Desktop = intnet.
 
+> Aparte recomiendo que a la hora de instalar Ubuntu Server antes de iniciar la máquina, lo mejor es establecer los adaptadores de red, ya que si desde un inicio estableces la Red NAT y la Red Interna después tendrás menos problemas sobretodo con SSH.
+
 ## Parámetros de la Red
 
 - **Red (Subnet):** `172.16.0.0/12`
