@@ -67,7 +67,6 @@ network:
     enp0s3:
       dhcp4: true
       dhcp6: false
-      set-name: enp0s3
     enp0s8:
       addresses: [172.16.0.1/12]
       accept-ra: true
