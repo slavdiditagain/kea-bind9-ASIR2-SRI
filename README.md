@@ -9,7 +9,7 @@ Guia detallada paso por paso para configurar un servidor DHCP (KEA) y un servido
 - **Ubuntu Server 26.04.1 (Dentro usaremos una red NAT y una Red interna)**
 > [!]
 > Requisitos minimos: 2GB RAM, 25GB Disco duro, 1 núcleo
-- **Ubuntu Desktop / Lubuntu (Dentro usaremos una red NAT y Red interna)**
+- **Ubuntu Desktop 26.04.1 (Dentro usaremos una red NAT y Red interna)**
 > [!]
 > Requisitos minimos (Ubuntu Server): 6GB RAM, 25GB, 2 núcleos o más
 ---
