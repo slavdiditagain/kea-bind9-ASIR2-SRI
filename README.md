@@ -129,7 +129,7 @@ sudo nano /etc/kea/kea-dhcp4.conf
         ],
         "reservations": [
           {
-            "hw-address": "[MAC DE LA MÁQUINA CLIENTE]",
+            "hw-address": "MAC DE LA MÁQUINA CLIENTE",
             "ip-address": "172.17.0.0",
             "hostname": "cliente"
           }
