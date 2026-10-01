@@ -51,7 +51,12 @@ Si tomamos como ejemplo las subredes que podría tener 172.16.0.0/12 al ser una 
 
 ### Rango (pool)
 ---
-El pool de manera resumida son los rangos de ips, que se van 
+El pool de manera resumida son los rangos de ips, es decir las ips que se les daran a los distintos equipos que estén en la misma red, por ejemplo si tenemos está configuración:
+
+**Server = 172.16.0.1**
+**Cliente = 172.17.0.0**
+
+Ahora si conectamos distintos ordenadores iran agarrando ips
 
 Esta se configura expresamente en /etc/kea/kea-dhcp4.conf
 ```
@@ -68,6 +73,7 @@ Esta se configura expresamente en /etc/kea/kea-dhcp4.conf
     }
 }
 ```
+
 
 ## 3. Gateway, servidores DNS, dominio...
 
