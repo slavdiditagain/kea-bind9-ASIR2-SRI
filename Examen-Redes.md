@@ -149,7 +149,7 @@ options {
     listen-on { 127.0.0.1; 172.16.0.1; };
     allow-query { localhost; 172.16.0.0/12; };
     recursion yes;
-    allow-recursion { localhost; 172.16.0.0/24; };
+    allow-recursion { localhost; 172.16.0.0/12; };
     forwarders { 8.8.8.8; 1.1.1.1; };
     dnssec-validation auto;
 };
