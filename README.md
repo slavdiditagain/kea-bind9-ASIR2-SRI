@@ -13,14 +13,14 @@ Guia detallada paso por paso para configurar un servidor DHCP (KEA) y un servido
 > [!]
 > Requisitos minimos (Ubuntu Server): 6GB RAM, 25GB, 2 núcleos o más
 ---
-> **Nota importante:** Es necesario que en ambas máquinas la red interna tengan el mismo nombre. Es decir debe quedar algo así:
-> 
-> ---
->
-> - Ubuntu Server = intnet.
-> - Ubuntu Desktop = intnet.
+**Nota importante:** Es necesario que en ambas máquinas la red interna tengan el mismo nombre. Es decir debe quedar algo así:
+ 
+---
 
-> Aparte recomiendo que a la hora de instalar Ubuntu Server antes de iniciar la máquina, lo mejor es establecer los adaptadores de red, ya que si desde un inicio estableces la Red NAT y la Red Interna después tendrás menos problemas sobretodo con SSH.
+- Ubuntu Server = intnet.
+- Ubuntu Desktop = intnet.
+
+**Aparte recomiendo que a la hora de instalar Ubuntu Server antes de iniciar la máquina, lo mejor es establecer los adaptadores de red, ya que si desde un inicio estableces la Red NAT y la Red Interna después tendrás menos problemas sobretodo con SSH.**
 
 ## Parámetros de la Red
 
