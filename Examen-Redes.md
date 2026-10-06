@@ -35,6 +35,7 @@ network:
         addresses: [172.16.0.1]
   version: 2
 ```
+
 ## Subredes
 Aquí estamos configurando las redes, lo importante es sobretodo en el caso de la red interna saber cual es la red que vamos a tomar, por ejemplo si queremos establecer una red 172.16.0.0/12 nos tendremos que atener a las limitaciones y reglas de la red elegida.
 
@@ -106,14 +107,14 @@ En Kea todo esto son opciones DHCP (option-data) que se envián al cliente junto
 "option-data": [
   { "name": "routers", "data": "172.16.0.1" },
   { "name": "domain-name-servers", "data": "172.16.0.2, 172.16.0.3" },
-  { "name": "domain-name", "data": "fp.local" },
-  { "name": "domain-search", "data": "fp.local" }
+  { "name": "domain-name", "data": "fp.internall" },
+  { "name": "domain-search", "data": "fp.internal" }
 ]
 ```
 - **routers:** Sirve para determinar **la puerta de enlace**
 - **domain-name-servers:** Son los distintos DNS que usará el cliente, pueden ser varios y deben ser separados por coma.
 - **domain-name:** Dominio que se asigna al cliente
-- **domain-search:** Lista de sufijos de búsqueda, **para que ping servidor resuelva a servidor.fp.local**.
+- **domain-search:** Lista de sufijos de búsqueda, **para que ping servidor resuelva a servidor.fp.internal**
 # 4. Tiempos de confesion, T1, T2
 **valid-lifetime:** Segundos que dura la concesión (la lease).
 **T1 (renew-timer):** Se usa cuando el cliente intenta renovar con el mismo servidor que le dio la ip.
@@ -167,30 +168,30 @@ options {
 # 7. Zona directa, registro DNS, SOA, NS, A, MX, CNAMF
 ### Archivo /etc/bind/named.conf.options:
 ```
-zone "fp.local" {
+zone "fp.internal" {
     type master;
-    file "/etc/bind/db.fp.local";
+    file "/etc/bind/db.fp.internal";
 };
 ```
 En "file" establecemos el lugar donde se va a guardar la db de la zona.
 
-### Fichero de la zona /etc/bind/db.fp.local:
+### Fichero de la zona /etc/bind/db.fp.internal:
 ```
 $TTL 86400
-@   IN  SOA server.fp.local. admin.fp.local. (
+@   IN  SOA server.fp.internal. admin.fp.internal. (
             2026100201  ; Serial
             3600        ; Refresh
             900         ; Retry
             604800      ; Expire
             86400 )     ; Negative cache TTL
 
-@       IN  NS    server.fp.local.
-@       IN  MX 10 correo.fp.local.
+@       IN  NS    server.fp.internal.
+@       IN  MX 10 correo.fp.internal.
 
 server     IN  A     172.16.0.1
 correo  IN  A     172.16.0.5
 www     IN  A     172.16.0.10
-web     IN  CNAME www.fp.local.
+web     IN  CNAME www.fp.internal.
 ```
 
 **SOA** datos de la zona:
@@ -228,20 +229,20 @@ zone "172.in-addr.arpa" {
 Con la zona 172.in-addr.arpa, en cada PTR se escriben los tres octetos restantes al revés. Ejemplo: 172.16.0.2 → 2.0.16.
 ```
 $TTL 86400
-@   IN  SOA server.fp.local. admin.fp.local. (
+@   IN  SOA server.fp.internal. admin.fp.internal. (
             2026100201  ; Serial
             3600        ; Refresh
             900         ; Retry
             604800      ; Expire
             86400 )     ; Negative cache TTL
 
-@       IN  NS   ns1.fp.local.
+@       IN  NS   server.fp.internal.
 
-2.0.16      IN  PTR  server.fp.local.      ; 172.16.0.2
-5.0.16      IN  PTR  correo.fp.local.   ; 172.16.0.5
-10.0.16     IN  PTR  www.fp.local.      ; 172.16.0.10
-20.1.16     IN  PTR  pc1.fp.local.      ; 172.16.1.20
-5.0.17      IN  PTR  srv.fp.local.      ; 172.17.0.5
+2.0.16      IN  PTR  server.fp.internal.      ; 172.16.0.2
+5.0.16      IN  PTR  correo.fp.internal.   ; 172.16.0.5
+10.0.16     IN  PTR  www.fp.internal.      ; 172.16.0.10
+20.1.16     IN  PTR  pc1.fp.internal.      ; 172.16.1.20
+5.0.17      IN  PTR  srv.fp.internal.      ; 172.17.0.5
 ```
 
 ## Opción B: una zona por cada /16
@@ -256,17 +257,18 @@ zone "16.172.in-addr.arpa" {
 ### Fichero de zona: /etc/bind/db.172.16
 ```
 $TTL 86400
-@   IN  SOA server.fp.local. admin.fp.local. (
+@   IN  SOA server.fp.internal. admin.fp.internal. (
             2026100201 3600 900 604800 86400 )
 
-@       IN  NS   server.fp.local.
+@       IN  NS   server.fp.internal.
 
-2.0     IN  PTR  server.fp.local.      ; 172.16.0.2
-5.0     IN  PTR  correo.fp.local.   ; 172.16.0.5
-10.0    IN  PTR  www.fp.local.      ; 172.16.0.10
-20.1    IN  PTR  pc1.fp.local.      ; 172.16.1.20
+2.0     IN  PTR  server.fp.internal.      ; 172.16.0.2
+5.0     IN  PTR  correo.fp.internal.   ; 172.16.0.5
+10.0    IN  PTR  www.fp.internal.      ; 172.16.0.10
+20.1    IN  PTR  pc1.fp.internal.      ; 172.16.1.20
 ```
 > [!] Cada IP / Zona solo debe tener un PTR, si no todo falla.
+
 ## Enlace con Kea 
 Si quieres que los PTR se creen solos con las leases, en Kea se indica la zona inversa en kea-dhcp-ddns:
 
