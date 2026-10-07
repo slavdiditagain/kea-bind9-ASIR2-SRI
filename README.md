@@ -11,7 +11,7 @@ Guia detallada paso por paso para configurar un servidor DHCP (KEA) y un servido
 > Requisitos minimos: 2GB RAM, 25GB Disco duro, 1 núcleo
 - **Ubuntu Desktop 26.04.1 (Dentro usaremos una red NAT y Red interna)**
 > [!]
-> Requisitos minimos (Ubuntu Server): 6GB RAM, 25GB, 2 núcleos o más
+> Requisitos minimos: 6GB RAM, 25GB, 2 núcleos o más
 ---
 **Nota importante:** Es necesario que en ambas máquinas la red interna tengan el mismo nombre. Es decir debe quedar algo así:
  
@@ -263,7 +263,7 @@ $TTL 604800
 @       IN  NS  server.fp.internal.
 1.0     IN  PTR server.fp.internal.
 ```
-> [!] 1 corresponde a 172.16.0.1. Está zona inversa solo cubre 172.16.x.x; la /12 completa necesitaría una zona por cada segundo octeto (16 a 31)
+> [!] 1.0 corresponde a 172.16.0.1. Está zona inversa solo cubre 172.16.x.x; la /12 completa necesitaría una zona por cada segundo octeto (16 a 31)
 ## Zona Inversa del Cliente
 ```
 sudo nano /etc/bind/db.172.17

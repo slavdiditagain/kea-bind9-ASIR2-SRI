@@ -64,16 +64,17 @@ Ahora si conectamos distintos ordenadores iran agarrando ips
 ```
 ...
 "subnet4": [
-    {
-        "subnet": "172.16.0.0/12",
-        "pools": [
-            {
-                // Este es el rango pool dinámico
-                "pool": "172.20.0.0 - 172.30.0.0" 
-            }
-        ]
-    }
-}
+  {
+    "id": 1,
+    "subnet": "172.16.0.0/12",
+    "pools": [
+      {
+        // Este es el rango pool dinámico
+        "pool": "172.20.0.0 - 172.30.0.0"
+      }
+    ]
+  }
+]
 ```
 
 ## Exclusiones
@@ -115,7 +116,7 @@ En Kea todo esto son opciones DHCP (option-data) que se envián al cliente junto
 - **domain-name-servers:** Son los distintos DNS que usará el cliente, pueden ser varios y deben ser separados por coma.
 - **domain-name:** Dominio que se asigna al cliente
 - **domain-search:** Lista de sufijos de búsqueda, **para que ping servidor resuelva a servidor.fp.internal**
-# 4. Tiempos de confesion, T1, T2
+# 4. Tiempos de concesión, T1, T2
 **valid-lifetime:** Segundos que dura la concesión (la lease).
 **T1 (renew-timer):** Se usa cuando el cliente intenta renovar con el mismo servidor que le dio la ip.
 **T2 (rebind-timer):** Si no se pudo renovar pregunta aquí a cualquier servidor DHCP.
@@ -188,7 +189,7 @@ $TTL 86400
 @       IN  NS    server.fp.internal.
 @       IN  MX 10 correo.fp.internal.
 
-server  IN  A  172.16.0.1
+server  IN  A     172.16.0.1
 correo  IN  A     172.16.0.5
 www     IN  A     172.16.0.10
 web     IN  CNAME www.fp.internal.
@@ -198,7 +199,7 @@ web     IN  CNAME www.fp.internal.
 - server: Es el servidor primario (MNAME).
 - admin: Es el correo del responsable.
 - Serial: Se incrementa por cada cambio.
-- Refresh: Cada cuánto consulta el escalado si hay cambios.
+- Refresh: Cada cuánto consulta al esclavo por si hay cambios.
 - Retry: Cada cuánto reintenta si falló.
 - Expire: Cuándo el esclavo deja de responder si no contacta con el maestro.
 - Negative TTL: Cuánto se cachea un "NOT EXIST".
@@ -211,13 +212,13 @@ web     IN  CNAME www.fp.internal.
 - **CNAME**: Alias de otro nombre no puede existir con otros registros del mismo nombre.
 # 8. Zona inversa. PTR
 
-**Resuelve IP → nombre.** El nombre de la zona se forma con los octetos de la red al revés más
+**Resuelve IP → nombre.** El nombre de la zona se forma con los octetos de la red al revés más .in-addr.arpa
 
 Usaremos la IP que usamos para la practica de [README](README.md).
 
 ## Opción A (la más simple):
 
-### Archivo /etc/bind/named.conf.options:
+### Archivo /etc/bind/named.conf.local:
 ```
 zone "172.in-addr.arpa" {
     type master;
@@ -239,21 +240,27 @@ $TTL 86400
 
 @       IN  NS   server.fp.internal.
 
-2.0.16      IN  PTR  server.fp.internal.   ; 172.16.0.1
+2.0.16      IN  PTR  server.fp.internal.   ; 172.16.0.2
 5.0.16      IN  PTR  correo.fp.internal.   ; 172.16.0.5
 10.0.16     IN  PTR  www.fp.internal.      ; 172.16.0.10
 20.1.16     IN  PTR  pc1.fp.internal.      ; 172.16.1.20
-5.0.17      IN  PTR  cliente.fp.internal.  ; 172.17.0.0
+0.0.17      IN  PTR  cliente.fp.internal.  ; 172.17.0.0
 ```
 
 ## Opción B: una zona por cada /16
 16.172.in-addr.arpa, 17.172.in-addr.arpa... hasta 31.172.in-addr.arpa. Son 16 zonas, pero es más ordenado en redes grandes o si quieres delegar partes a otros servidores.
-### Archivo /etc/bind/named.conf.options:
+### Archivo /etc/bind/named.conf.local:
 ```
 zone "16.172.in-addr.arpa" {
     type master;
     file "/etc/bind/db.172.16";
 };
+
+zone "17.172.in-addr.arpa" {
+    type master;
+    file "/etc/bind/db.172.17";
+};
+
 ```
 ### Fichero de zona: /etc/bind/db.172.16
 ```
@@ -267,7 +274,7 @@ $TTL 86400
 
 @       IN  NS   server.fp.internal.
 
-1.0     IN  PTR  server.fp.internal.   ; 172.16.0.1
+2.0     IN  PTR  server.fp.internal.   ; 172.16.0.2
 5.0     IN  PTR  correo.fp.internal.   ; 172.16.0.5
 10.0    IN  PTR  www.fp.internal.      ; 172.16.0.10
 20.1    IN  PTR  pc1.fp.internal.      ; 172.16.1.20
