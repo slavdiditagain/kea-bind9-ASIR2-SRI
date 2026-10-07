@@ -290,7 +290,7 @@ sudo named-checkzone 17.172.in-addr.arpa /etc/bind/db.172.17
 sudo systemctl restart bind9
 sudo systemctl enable bind9
 ```
-> [!!!] Si no funciona no hay de que preocuparse, con reiniciar de manera completa la máquina del server la mayoría de cosas se soluciona.
+
 # 4. Comprobar que todo está bien configurado
 
 ## En Ubuntu Server y Ubuntu Desktop
@@ -299,7 +299,9 @@ ping cliente
 ping server
 ```
 Y ya con esto podremos saber que todo está perfectamente configurado.
+> [!!!] Si no funciona no hay de que preocuparse, con reiniciar de manera completa la máquina del server la mayoría de cosas se soluciona.
 
+>Yo sobretodo comprobaría si es que no hace ping al cliente es muy probable que haya sido culpa de haber puesto mal la MAC en reservations, ojo hay que ponerla durante la configuración de KEA si no todo puede salir mal, hay bastantes maneras de conseguirla, recomiendo entrar con SSH a la máquina cliente o copiarla asegurandose de que está bien escrita.
 ---
 
 Gracias por leer hasta aquí.
