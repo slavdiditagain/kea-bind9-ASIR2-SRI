@@ -1,4 +1,4 @@
-# EXÁMEN DE REDES 07/10/2026
+# EXAMEN DE REDES 07/10/2026
 
 # ESTA GUIA NO ES PARA COPIAR Y PEGAR (en su mayoria) sirve para aprender que hacen las cosas, si quieren pasarlo a la IA para super resumirlo me parece perfecto.
 
@@ -107,7 +107,7 @@ En Kea todo esto son opciones DHCP (option-data) que se envián al cliente junto
 "option-data": [
   { "name": "routers", "data": "172.16.0.1" },
   { "name": "domain-name-servers", "data": "172.16.0.2, 172.16.0.3" },
-  { "name": "domain-name", "data": "fp.internall" },
+  { "name": "domain-name", "data": "fp.internal" },
   { "name": "domain-search", "data": "fp.internal" }
 ]
 ```
@@ -129,7 +129,7 @@ En Kea todo esto son opciones DHCP (option-data) que se envián al cliente junto
 ```
 Si no se define, Kea por defecto calcula: **T1 = 50% y T2 = 87,5 de la lease**. También existen min-valid-lifetime y max-valid-lifetime que acotan lo que el cliente puede pedir.
 # 5. Reserva por dirección fisica
-Explicado en [README](./README.md#4-comprobar-que-todo-está-bien-configurado) a la hora de configurar el Kea.
+Explicado en [README](./README.md#2-instalar-y-configurar-kea-dhcp) a la hora de configurar el Kea.
 # 6. /etc/bind/named.conf.options (Distintas configuraciones)
 **/etc/bind/named.conf.options** tiene distintas configuraciones en el bloque **options{...};** son estás las opciones que son clave:
 
@@ -165,8 +165,8 @@ options {
     allow-transfer { 172.16.0.3; };   # IP del esclavo
 };
 ```
-# 7. Zona directa, registro DNS, SOA, NS, A, MX, CNAMF
-### Archivo /etc/bind/named.conf.options:
+# 7. Zona directa, registro DNS, SOA, NS, A, MX, CNAME
+### Archivo /etc/bind/named.conf.local:
 ```
 zone "fp.internal" {
     type master;
@@ -188,20 +188,20 @@ $TTL 86400
 @       IN  NS    server.fp.internal.
 @       IN  MX 10 correo.fp.internal.
 
-server     IN  A     172.16.0.1
+server  IN  A  172.16.0.1
 correo  IN  A     172.16.0.5
 www     IN  A     172.16.0.10
 web     IN  CNAME www.fp.internal.
 ```
 
 **SOA** datos de la zona:
-- server: es el servidor privado.
-- admin: es el correo del responsable.
+- server: Es el servidor primario (MNAME).
+- admin: Es el correo del responsable.
 - Serial: Se incrementa por cada cambio.
-- Refresh: cada cuánto consulta el esclado si hay cambios.
-- Retry: cada cuánto reintenta si falló.
-- Expire: cuándo el esclavo deja de responder si no contacta con el maestro.
-- Negative TTL: cuánto se cachea un "NOT EXIST".
+- Refresh: Cada cuánto consulta el escalado si hay cambios.
+- Retry: Cada cuánto reintenta si falló.
+- Expire: Cuándo el esclavo deja de responder si no contacta con el maestro.
+- Negative TTL: Cuánto se cachea un "NOT EXIST".
 
 ### Definición de terminos:
 - **DNS**: Se refiere a donde se resuelve el servidor.
@@ -210,6 +210,7 @@ web     IN  CNAME www.fp.internal.
 - **MX**: Servidor de correo con prioridad (menor número = más prioridad)
 - **CNAME**: Alias de otro nombre no puede existir con otros registros del mismo nombre.
 # 8. Zona inversa. PTR
+
 **Resuelve IP → nombre.** El nombre de la zona se forma con los octetos de la red al revés más
 
 Usaremos la IP que usamos para la practica de [README](README.md).
@@ -238,15 +239,15 @@ $TTL 86400
 
 @       IN  NS   server.fp.internal.
 
-2.0.16      IN  PTR  server.fp.internal.      ; 172.16.0.2
+2.0.16      IN  PTR  server.fp.internal.   ; 172.16.0.1
 5.0.16      IN  PTR  correo.fp.internal.   ; 172.16.0.5
 10.0.16     IN  PTR  www.fp.internal.      ; 172.16.0.10
 20.1.16     IN  PTR  pc1.fp.internal.      ; 172.16.1.20
-5.0.17      IN  PTR  srv.fp.internal.      ; 172.17.0.5
+5.0.17      IN  PTR  cliente.fp.internal.  ; 172.17.0.0
 ```
 
 ## Opción B: una zona por cada /16
-16.172.in-addr.arpa, 17.172.in-addr.arpa... hasta 31.172.in-addr.arp. Son 16 zonas, pero es más ordenado en redes grandes o si quieres delegar partes a otros servidores.
+16.172.in-addr.arpa, 17.172.in-addr.arpa... hasta 31.172.in-addr.arpa. Son 16 zonas, pero es más ordenado en redes grandes o si quieres delegar partes a otros servidores.
 ### Archivo /etc/bind/named.conf.options:
 ```
 zone "16.172.in-addr.arpa" {
@@ -258,21 +259,38 @@ zone "16.172.in-addr.arpa" {
 ```
 $TTL 86400
 @   IN  SOA server.fp.internal. admin.fp.internal. (
-            2026100201 3600 900 604800 86400 )
+            2026100201  ; Serial
+            3600        ; Refresh
+            900         ; Retry
+            604800      ; Expire
+            86400 )     ; Negative cache TTL
 
 @       IN  NS   server.fp.internal.
 
-2.0     IN  PTR  server.fp.internal.      ; 172.16.0.2
+1.0     IN  PTR  server.fp.internal.   ; 172.16.0.1
 5.0     IN  PTR  correo.fp.internal.   ; 172.16.0.5
 10.0    IN  PTR  www.fp.internal.      ; 172.16.0.10
 20.1    IN  PTR  pc1.fp.internal.      ; 172.16.1.20
 ```
-> [!] Cada IP / Zona solo debe tener un PTR, si no todo falla.
+### Fichero de zona: /etc/bind/db.172.17
+```
+$TTL 86400
+@   IN  SOA server.fp.internal. admin.fp.internal. (
+            2026100201  ; Serial
+            3600        ; Refresh
+            900         ; Retry
+            604800      ; Expire
+            86400 )     ; Negative cache TTL
+
+@       IN  NS   server.fp.internal.
+
+0.0     IN  PTR  cliente.fp.internal.   ; 172.17.0.0
+```
 
 ## Enlace con Kea 
 Si quieres que los PTR se creen solos con las leases, en Kea se indica la zona inversa en kea-dhcp-ddns:
 
-### /etc/kea/kea-dhcp4.conf
+### /etc/kea/kea-dhcp-ddns.conf
 
 ```
 "reverse-ddns": {

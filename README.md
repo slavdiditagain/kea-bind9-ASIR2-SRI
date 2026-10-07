@@ -1,6 +1,6 @@
 # Guía de Configuración: Ubuntu Server con KEA DHCP y BIND9
 
-Guia detallada paso por paso para configurar un servidor DHCP (KEA) y un servidor DNS (BIND9) en Ubuntu Server, pudiendo hacer ping desde un cliente (Ubuntu Desktop)
+Guia detallada paso por paso para configurar un servidor DHCP (KEA) y un servidor DNS (BIND9) en Ubuntu Server añadiendo un Ubuntu Desktop que actua como cliente, resolviendo un "ping cliente" y "ping server".
 
 > [!]
 > Antes de empezar quiero aclarar que las pruebas se van a hacer con Virtual Box, con Hardware real algunas cosas podrían cambiar
@@ -169,7 +169,7 @@ sudo nano /etc/kea/kea-dhcp4.conf
 >```
 >"reservations": [
 >          {
->            "hw-address": "08:00:27:8e:d9:72"
+>            "hw-address": "08:00:27:8e:d9:72",
 >           "ip-address": "172.17.0.0",
 >            "hostname": "cliente"
 >          }
@@ -261,7 +261,7 @@ $TTL 604800
             604800 )
 
 @       IN  NS  server.fp.internal.
-1       IN  PTR server.fp.internal.
+1.0     IN  PTR server.fp.internal.
 ```
 > [!] 1 corresponde a 172.16.0.1. Está zona inversa solo cubre 172.16.x.x; la /12 completa necesitaría una zona por cada segundo octeto (16 a 31)
 ## Zona Inversa del Cliente
@@ -278,7 +278,7 @@ $TTL    604800
             604800 )
 ;
 @       IN      NS      server.fp.internal.
-1       IN      PTR     cliente.fp.internal.
+0.0     IN      PTR     cliente.fp.internal.
 ```
 ## Comprobar y reiniciar
 ```
