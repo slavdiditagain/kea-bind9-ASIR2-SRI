@@ -304,4 +304,6 @@ Y ya con esto podremos saber que todo está perfectamente configurado.
 >Yo sobretodo comprobaría si es que no hace ping al cliente es muy probable que haya sido culpa de haber puesto mal la MAC en reservations, ojo hay que ponerla durante la configuración de KEA si no todo puede salir mal, hay bastantes maneras de conseguirla, recomiendo entrar con SSH a la máquina cliente o copiarla asegurandose de que está bien escrita.
 ---
 
+CON LO DEL EXAMEN PASENLO A LA IA JUNTO A COMO SE CALIFICA.
+
 Gracias por leer hasta aquí.
