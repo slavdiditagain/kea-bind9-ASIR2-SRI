@@ -189,7 +189,7 @@ $TTL 86400
 @       IN  NS    server.fp.internal.
 @       IN  MX 10 correo.fp.internal.
 
-server  IN  A     172.16.0.1
+server  IN  A     172.16.0.2
 correo  IN  A     172.16.0.5
 www     IN  A     172.16.0.10
 web     IN  CNAME www.fp.internal.
