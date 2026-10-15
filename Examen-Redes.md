@@ -1,4 +1,4 @@
-# EXAMEN DE REDES 07/10/2026
+# EXAMEN DE REDES 07/10/2026 | BY SLAV
 
 # ESTA GUIA NO ES PARA COPIAR Y PEGAR (en su mayoria) sirve para aprender que hacen las cosas, si quieren pasarlo a la IA para super resumirlo me parece perfecto.
 

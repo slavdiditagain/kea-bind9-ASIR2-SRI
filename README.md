@@ -1,4 +1,4 @@
-# Guía de Configuración: Ubuntu Server con KEA DHCP y BIND9
+# Guía de Configuración: Ubuntu Server con KEA DHCP y BIND9 | BY SLAV
 
 Guia detallada paso por paso para configurar un servidor DHCP (KEA) y un servidor DNS (BIND9) en Ubuntu Server añadiendo un Ubuntu Desktop que actua como cliente, resolviendo un "ping cliente" y "ping server".
 
